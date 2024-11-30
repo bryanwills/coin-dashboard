@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --theme-dracula: #282a36;
+  --theme-monokai: #272822;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--theme-dracula);
+  color: white;
+}
+
+.dark {
+  --theme-background: var(--theme-dracula);
+}
+
+.light {
+  --theme-background: var(--theme-monokai);
+}
+
