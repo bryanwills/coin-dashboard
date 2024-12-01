@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // Get all coins
-app.get('/coins', async (req, res) => {
+app.get('/coins', async (req: Request, res: Response) => {
   const { sortBy, order } = req.query;
   const validSorts = ['price', 'denomination', 'year'];
   const orderBy = validSorts.includes(sortBy as string) ? sortBy : 'price';
@@ -30,12 +30,12 @@ app.get('/coins', async (req, res) => {
     const result = await pool.query(`SELECT * FROM coins ORDER BY ${orderBy} ${sortOrder} LIMIT 20`);
     res.json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 });
 
 // Add a new coin
-app.post('/coins', async (req, res) => {
+app.post('/coins', async (req: Request, res: Response) => {
   const { name, year, denomination, price, condition } = req.body;
 
   try {
@@ -45,12 +45,12 @@ app.post('/coins', async (req, res) => {
     );
     res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 });
 
 // Update a coin
-app.put('/coins/:id', async (req, res) => {
+app.put('/coins/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, year, denomination, price, condition } = req.body;
 
@@ -61,19 +61,19 @@ app.put('/coins/:id', async (req, res) => {
     );
     res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 });
 
 // Delete a coin
-app.delete('/coins/:id', async (req, res) => {
+app.delete('/coins/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
     await pool.query('DELETE FROM coins WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 });
 
