@@ -14,10 +14,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "formidable": "^3.5.2",
     "next": "^15.0.3",
     "pg": "^8.13.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.0",
