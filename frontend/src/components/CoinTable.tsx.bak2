@@ -4,11 +4,7 @@ type Coin = {
   id: number;
   name: string;
   year: number;
-  denomination: string;
-  price: number | string | null; // Allow string or null to handle backend inconsistencies
-  condition: string;
-  potential_value?: number | string | null;
-  images?: string[];
+  value?: number;
 };
 
 type CoinTableProps = {
@@ -49,11 +45,6 @@ export default function CoinTable({ coins, refreshCoins }: CoinTableProps) {
           <th className="p-4">ID</th>
           <th className="p-4">Name</th>
           <th className="p-4">Year</th>
-          <th className="p-4">Denomination</th>
-          <th className="p-4">Price</th>
-          <th className="p-4">Condition</th>
-          <th className="p-4">Potential Value</th>
-          <th className="p-4">Images</th>
           <th className="p-4">Actions</th>
         </tr>
       </thead>
@@ -89,81 +80,6 @@ export default function CoinTable({ coins, refreshCoins }: CoinTableProps) {
                 coin.year
               )}
             </td>
-            <td className="p-4">
-              {editCoin?.id === coin.id ? (
-                <input
-                  type="text"
-                  defaultValue={coin.denomination}
-                  onChange={(e) =>
-                    setEditCoin({ ...coin, denomination: e.target.value })
-                  }
-                  className="p-2 rounded border border-gray-600 bg-gray-900 text-white"
-                />
-              ) : (
-                coin.denomination
-              )}
-            </td>
-            <td className="p-4">
-              {editCoin?.id === coin.id ? (
-                <input
-                  type="number"
-                  step="0.01"
-                  defaultValue={coin.price || 0}
-                  onChange={(e) =>
-                    setEditCoin({ ...coin, price: parseFloat(e.target.value) })
-                  }
-                  className="p-2 rounded border border-gray-600 bg-gray-900 text-white"
-                />
-              ) : (
-                `$${coin.price ? parseFloat(String(coin.price)).toFixed(2) : "0.00"}`
-              )}
-            </td>
-            <td className="p-4">
-              {editCoin?.id === coin.id ? (
-                <input
-                  type="text"
-                  defaultValue={coin.condition}
-                  onChange={(e) =>
-                    setEditCoin({ ...coin, condition: e.target.value })
-                  }
-                  className="p-2 rounded border border-gray-600 bg-gray-900 text-white"
-                />
-              ) : (
-                coin.condition
-              )}
-            </td>
-            <td className="p-4">
-              {editCoin?.id === coin.id ? (
-                <input
-                  type="number"
-                  step="0.01"
-                  defaultValue={coin.potential_value || ""}
-                  onChange={(e) =>
-                    setEditCoin({
-                      ...coin,
-                      potential_value: parseFloat(e.target.value) || undefined,
-                    })
-                  }
-                  className="p-2 rounded border border-gray-600 bg-gray-900 text-white"
-                />
-              ) : (
-                coin.potential_value ? `$${parseFloat(String(coin.potential_value)).toFixed(2)}` : "N/A"
-              )}
-            </td>
-            <td className="p-4">
-              {coin.images?.length > 0 ? (
-                coin.images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt="Coin"
-                    className="w-12 h-12 object-cover inline-block mx-1"
-                  />
-                ))
-              ) : (
-                "No Images"
-              )}
-            </td>
             <td className="p-4 space-x-2">
               {editCoin?.id === coin.id ? (
                 <button
@@ -193,3 +109,4 @@ export default function CoinTable({ coins, refreshCoins }: CoinTableProps) {
     </table>
   );
 }
+

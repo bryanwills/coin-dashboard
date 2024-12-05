@@ -1,19 +1,42 @@
-import React, { ReactNode } from 'react';
+import React, { useState, useEffect } from "react";
+import CoinTable from "./CoinTable";
+import CreateCoinForm from "./CreateCoinForm";
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  return (
-    <div className="min-h-screen p-4 bg-gray-800 text-white">
-      <header className="py-4 text-center">
-        <h1 className="text-3xl font-bold">Coin Catalog</h1>
-      </header>
-      <main>{children}</main>
-    </div>
-  );
+type Coin = {
+  id: number;
+  name: string;
+  year: number;
+  denomination: string;
+  price: number;
+  condition: string;
+  potential_value?: number;
+  images?: string[];
 };
 
-export default Layout;
+export default function Layout() {
+  const [coins, setCoins] = useState<Coin[]>([]);
 
+  const fetchCoins = async () => {
+    try {
+      const response = await fetch("/api/coins");
+      const data = await response.json();
+      setCoins(data);
+    } catch (error) {
+      console.error("Failed to fetch coins:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCoins();
+  }, []);
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold text-white mb-4">Coin Dashboard</h1>
+      <CreateCoinForm refreshCoins={fetchCoins} />
+      <div className="mt-8">
+        <CoinTable coins={coins} refreshCoins={fetchCoins} />
+      </div>
+    </div>
+  );
+}

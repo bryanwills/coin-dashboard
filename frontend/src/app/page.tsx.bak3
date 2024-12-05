@@ -51,14 +51,12 @@ export default function HomePage() {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {showCreateForm && (
-        <div className="mb-6">
-          <CreateCoinForm
-            refreshCoins={() => {
-              setShowCreateForm(false);
-              fetchCoins(); // Refresh coins after adding a new one
-            }}
-          />
-        </div>
+        <CreateCoinForm
+          onClose={() => {
+            setShowCreateForm(false);
+            fetchCoins(); // Refresh coins after adding a new one
+          }}
+        />
       )}
       <CoinTable coins={filteredCoins} refreshCoins={fetchCoins} />
     </div>
