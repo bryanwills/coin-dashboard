@@ -1,0 +1,102 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        run: npm install
+
+      - name: Build backend
+        run: npx tsc # Assuming tsconfig.json is set up correctly
+
+      - name: Archive backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-artifact
+          path: |
+            dist/
+            node_modules/
+            package.json
+            package-lock.json
+            # Add any other necessary backend files or folders
+
+  frontend_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Lint frontend
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: Archive frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-artifact
+          path: |
+            frontend/.next/
+            frontend/public/
+            frontend/package.json
+            frontend/package-lock.json
+            frontend/next.config.ts
+            # Add any other necessary frontend files like server.js if using custom server with Next.js
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [backend_build, frontend_build] # Depends on successful builds
+    steps:
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifact
+          path: backend-artifact # Download to a specific directory
+
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-artifact
+          path: frontend-artifact # Download to a specific directory
+
+      - name: List downloaded artifacts (for verification)
+        run: |
+          echo "Backend artifact contents:"
+          ls -R backend-artifact
+          echo ""
+          echo "Frontend artifact contents:"
+          ls -R frontend-artifact
+
+      - name: Deploy to server
+        run: |
+          echo "Deployment steps would go here."
+          echo "For example, copying files to a server via SCP, then SSHing to restart a service."
+          echo "Or, if using Docker, building images and pushing to a registry, then updating a service."
+          echo "Current artifacts are in ./backend-artifact and ./frontend-artifact"
